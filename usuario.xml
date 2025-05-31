@@ -1,0 +1,26 @@
+<usuarios>
+    <usuario>
+        <nombre>Lucia Asifuina</nombre>
+        <usuario>U1</usuario>
+        <contraseña>123Abc</contraseña>
+        <rol>Vendedor</rol>
+    </usuario>
+    <usuario>
+        <nombre>Luis Silvestre</nombre>
+        <usuario>U2</usuario>
+        <contraseña>456Cba</contraseña>
+        <rol>Administrador</rol>
+    </usuario>
+    <usuario>
+        <nombre>Dan333iela López</nombre>
+        <usuario>U3</usuario>
+        <contraseña>789Abc</contraseña>
+        <rol>Administrador</rol>
+    </usuario>
+    <usuario>
+        <nombre>Cristian Peralta</nombre>
+        <usuario>U4</usuario>
+        <contraseña>123Cba</contraseña>
+        <rol>Vendedor</rol>
+    </usuario>
+</usuarios>

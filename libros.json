@@ -1,0 +1,25 @@
+[
+    {
+       "titulo":"A Oscuras",
+       "autor":"Navessa Allen",
+       "precio": 163.39,
+       "cantidad": 30,
+       "genero":"Comedia Negra"
+
+    },
+    {
+       "titulo":"Romper el hielo",
+       "autor":"Hannah Grace",
+       "precio": 230.00,
+       "cantidad":100,
+       "genero":"Romance Contemporaneo"
+    },
+    {
+       "titulo":"El Duque y yo",
+       "autor": "Jualia Quinn",
+       "precio": 210.00,
+       "cantidad": 75,
+       "genero": "Ficcion"
+    }
+]
+    
