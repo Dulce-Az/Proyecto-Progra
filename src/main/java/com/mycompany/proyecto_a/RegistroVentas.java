@@ -4,9 +4,15 @@
  */
 package com.mycompany.proyecto_a;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -97,7 +103,7 @@ public class RegistroVentas extends javax.swing.JFrame {
         }
         actualizarTotalCompra();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -131,6 +137,7 @@ public class RegistroVentas extends javax.swing.JFrame {
         jTextField8 = new javax.swing.JTextField();
         jTextField9 = new javax.swing.JTextField();
         jTextField10 = new javax.swing.JTextField();
+        cargarArchivoCSV = new javax.swing.JButton();
 
         label1.setText("label1");
 
@@ -201,12 +208,23 @@ public class RegistroVentas extends javax.swing.JFrame {
             }
         });
 
+        cargarArchivoCSV.setText("Cargar desde CSV");
+        cargarArchivoCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cargarArchivoCSVActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(326, 326, 326)
+                        .addComponent(jButton3)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(276, 276, 276)
                         .addComponent(jLabel4)
@@ -260,15 +278,14 @@ public class RegistroVentas extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(cargarArchivoCSV)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(24, 24, 24)))))
                 .addGap(23, 23, 23))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(326, 326, 326)
-                .addComponent(jButton3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -283,9 +300,15 @@ public class RegistroVentas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(68, 68, 68)
-                .addComponent(jButton3)
-                .addGap(19, 19, 19))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addComponent(jButton3)
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cargarArchivoCSV)
+                        .addGap(28, 28, 28))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -433,8 +456,79 @@ public class RegistroVentas extends javax.swing.JFrame {
        
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void cargarArchivoCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarArchivoCSVActionPerformed
+        // TODO add your handling code here:
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                String ruta  =fileChooser.getSelectedFile().getAbsolutePath();
+                
+                ArrayList<VentaCompleta> ventas = leerVentasCSV(ruta);
+                
+                Proyecto_A.ConsultaVenta.addAll(ventas);
+                
+                JOptionPane.showMessageDialog(this, 
+                        "Se cargaron " + ventas.size() + " ventas", 
+                        "Exito",
+                        JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,"Error al cargar archivo" + e.getMessage(),"Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_cargarArchivoCSVActionPerformed
+private ArrayList<VentaCompleta>leerVentasCSV(String ruta) throws IOException, ParseException{
+    ArrayList<VentaCompleta> ventas = new ArrayList <>();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy,HH:mm:ss");
     
+    try(BufferedReader br = new BufferedReader(new FileReader(ruta))){
+        String linea;
+        boolean primeraLinea = true;
+        
+        while ((linea = br.readLine())!= null) { 
+            linea = linea.trim();
+            if (linea.isEmpty() || primeraLinea) {
+                primeraLinea = false;
+                continue;
+            }
+            String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            
+            if (datos.length < 6) {
+                System.err.println("Línea ignorada (faltan datos): " + linea);
+                continue;
+            }
+            
+            try {
+                String nit = datos[0].trim();
+                String nombre = datos[1].trim();
+                String direccion = datos[2].trim();
+                
+                String fechaCompleta = datos[3].trim() + "," + datos[4].trim(); 
+                
+                double totalConIva = Double.parseDouble(datos[5].trim());
+                double totalSinIva = Double.parseDouble(datos[6].trim());
+                
+                VentaCompleta venta = new VentaCompleta(
+                        nit,
+                        nombre,
+                        direccion,
+                        totalConIva,
+                        totalSinIva
+                );
+                venta.fechaHora = dateFormat.parse(fechaCompleta);
+                
+                ventas.add(venta);
+                
+            } catch (Exception e) {
+                System.err.println("Error procesando línea: " + linea);
+                throw new ParseException("Formato incorrecto en línea: " + linea, 0);
+            }
+        }
+    }
+    return ventas;
+}    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cargarArchivoCSV;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyecto_a;
 
+
 import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -38,14 +39,13 @@ public class ConsultaVenta extends javax.swing.JFrame {
                venta.nit,
                venta.nombreCliente,
                venta.direccion,
-               dateFormat.format(venta.fechaHora),
+               new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(venta.fechaHora),
                String.format("%.2f", venta.totalConIva),
                String.format("%.2f", venta.totalSinIva)
             };
            t.addRow(fila);
         }
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
