@@ -4,7 +4,6 @@
  */
 package com.mycompany.proyecto_a;
 
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,40 +18,34 @@ import javax.swing.table.TableModel;
  *
  * @author az
  */
-public class ConsultaVenta extends javax.swing.JFrame {
+public class InformeLibros extends javax.swing.JFrame {
     public Usuario usuarioActual;
     /**
-     * Creates new form ConsultaVenta
+     * Creates new form InformeLibros
      */
-    public ConsultaVenta(Usuario usuario) {
+    public InformeLibros(Usuario usuario) {
         initComponents();
         usuarioActual = usuario;
-        jTextField1.setText(usuarioActual.nombre);
-        
         pintarTabla();
     }
-    
     private void pintarTabla(){
-        String encabezados[]= {"NIT", "Nombre del Cliente","Direccion","Fecha y Hora", "Total con IVA", "Total sin IVA"};
+        String encabezados []={"Fecha y Hora","Cantidad","Nombre del Libro","Precio de Venta" };
         DefaultTableModel t = new DefaultTableModel(encabezados,0);
         jTable1.setModel(t);
         TableModel tabla = jTable1.getModel();
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         
-        for (VentaCompleta venta : Proyecto_A.ConsultaVenta) {
-            Object[] fila = {
-               venta.nit,
-               venta.nombreCliente,
-               venta.direccion,
-               dateFormat.format(venta.fechaHora),
-               String.format("%.2f", venta.totalConIva),
-               String.format("%.2f", venta.totalSinIva)
+        for (regisVen venta : Proyecto_A.InformeLibros) {
+            Object [] fila = {
+                dateFormat.format(venta.fecha),
+                venta.cantidad,
+                venta.libro,
+                String.format("%.2f", venta.total)
             };
-           t.addRow(fila);
+            t.addRow(fila);
         }
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,14 +59,12 @@ public class ConsultaVenta extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        ExportacionCSV = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("URW Gothic", 0, 18)); // NOI18N
-        jLabel1.setText("Informe de ventas ");
+        jLabel1.setText("Informe de Libros Vendidos ");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -95,13 +86,10 @@ public class ConsultaVenta extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("URW Gothic", 0, 14)); // NOI18N
-        jLabel2.setText("Vendedor: ");
-
-        ExportacionCSV.setText("Cargar a CSV");
-        ExportacionCSV.addActionListener(new java.awt.event.ActionListener() {
+        jButton2.setText("Cargar a CSV");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ExportacionCSVActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -109,60 +97,45 @@ public class ConsultaVenta extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(ExportacionCSV)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addGap(20, 20, 20))
+                .addGap(27, 27, 27))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(91, 91, 91)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(34, 34, 34)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 705, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(289, 289, 289)
+                        .addGap(240, 240, 240)
                         .addComponent(jLabel1)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel1)
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(ExportacionCSV))
-                .addGap(19, 19, 19))
+                    .addComponent(jButton2))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void ExportacionCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportacionCSVActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         try {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Guardar archivo csv");
-            fileChooser.setSelectedFile(new File("ventas.csv"));
+            fileChooser.setDialogTitle("Guardar el reporte de libros vendidos");
+            fileChooser.setSelectedFile(new File("reporte_libros_vendidos.csv"));
             
             int userSelection = fileChooser.showSaveDialog(this);
             
@@ -174,41 +147,50 @@ public class ConsultaVenta extends javax.swing.JFrame {
                     filePath += ".csv";
                 }
                 
-                try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
-                    writer.println("Nit, Nombre Cliente, Direccion, Fecha y Hora, Total sin IVA, Total con IVA");
+                try (PrintWriter escribir = new PrintWriter(new FileWriter(filePath))){
+                    escribir.println("Fecha Venta, Cantidad, Nombre Libro, Precio Venta");
                     
-                    SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/HH/yyyy HH:mm:ss");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     
-                    for (VentaCompleta venta: Proyecto_A.ConsultaVenta) {
-                        writer.println(
-                        "\"" + venta.nit + "\"," +
-                        "\"" + venta.nombreCliente + "\"," +
-                        "\"" + venta.direccion + "\"," + 
-                        "\"" + dateFormat.format(venta.fechaHora)+ "\"," +
-                        String.format("%.2f", venta.totalSinIva) + "," +
-                        String.format("%.2f", venta.totalConIva));
-                        
-                        JOptionPane.showMessageDialog(this, "Datos exportados correctamente a: \n " + filePath, "Exito", JOptionPane.ERROR_MESSAGE);
-                        
+                    for (regisVen venta : Proyecto_A.RegistroVenta) {
+                        escribir.println(
+                        "\"" + dateFormat.format(venta.fecha) + "\"" + 
+                                venta.cantidad + "," + 
+                                "\"" + venta.libro + "\"," + 
+                                String.format("%.2f", venta.total));
                     }
-                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(this, "Reporte de libros exportado Correctamente a :\n" + filePath, "Exito", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                  JOptionPane.showMessageDialog(this, 
+                    "Error al escribir el archivo: " + ex.getMessage(), 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);   
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al exportar datos: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, 
+            "Error al exportar reporte: " + e.getMessage(), 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
         }
-    }//GEN-LAST:event_ExportacionCSVActionPerformed
+    }//GEN-LAST:event_jButton2ActionPerformed
 
- 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ExportacionCSV;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

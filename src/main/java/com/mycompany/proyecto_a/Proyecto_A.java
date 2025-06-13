@@ -17,6 +17,7 @@ public class Proyecto_A {
     public static ArrayList<regisVen>RegistroVenta=new ArrayList<>();
    public static ArrayList<VentaCompleta>ConsultaVenta = new ArrayList<>();
    public static ArrayList<Proveedor>Proveedor= new ArrayList<>();
+   public static ArrayList<regisVen>InformeLibros=new ArrayList<>();
 
     public static void main(String[] args) {
         

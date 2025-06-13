@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -113,7 +114,6 @@ public class RegistroVentas extends javax.swing.JFrame {
         jTextField8 = new javax.swing.JTextField();
         jTextField9 = new javax.swing.JTextField();
         jTextField10 = new javax.swing.JTextField();
-        cargarArchivoCSV = new javax.swing.JButton();
 
         label1.setText("label1");
 
@@ -184,13 +184,6 @@ public class RegistroVentas extends javax.swing.JFrame {
             }
         });
 
-        cargarArchivoCSV.setText("Cargar a CSV");
-        cargarArchivoCSV.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cargarArchivoCSVActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -254,12 +247,9 @@ public class RegistroVentas extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(cargarArchivoCSV)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(24, 24, 24)))))
                 .addGap(23, 23, 23))
         );
@@ -276,15 +266,9 @@ public class RegistroVentas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(jButton3)
-                        .addGap(19, 19, 19))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cargarArchivoCSV)
-                        .addGap(28, 28, 28))))
+                .addGap(68, 68, 68)
+                .addComponent(jButton3)
+                .addGap(19, 19, 19))
             .addGroup(layout.createSequentialGroup()
                 .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -448,53 +432,8 @@ public class RegistroVentas extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, mensaje,"Registro de Venta", JOptionPane.INFORMATION_MESSAGE);
        
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void cargarArchivoCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarArchivoCSVActionPerformed
-        // TODO add your handling code here:
-        try {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Guardar archivo csv");
-            fileChooser.setSelectedFile(new File("ventas.csv"));
-            
-            int userSelection = fileChooser.showSaveDialog(this);
-            
-            if (userSelection == JFileChooser.APPROVE_OPTION) {
-                File fileToSave = fileChooser.getSelectedFile();
-                String filePath = fileToSave.getAbsolutePath();
-                
-                if (!filePath.toLowerCase().endsWith(".csv")) {
-                    filePath += ".csv";
-                }
-                
-                try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
-                    writer.println("Nit, Nombre Cliente, Direccion, Fecha y Hora, Total sin IVA, Total con IVA");
-                    
-                    SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/HH/yyyy HH:mm:ss");
-                    
-                    for (VentaCompleta venta: Proyecto_A.ConsultaVenta) {
-                        writer.println(
-                        "\"" + venta.nit + "\"," +
-                        "\"" + venta.nombreCliente + "\"," +
-                        "\"" + venta.direccion + "\"," + 
-                        "\"" + dateFormat.format(venta.fechaHora)+ "\"," +
-                        String.format("%.2f", venta.totalSinIva) + "," +
-                        String.format("%.2f", venta.totalConIva));
-                        
-                        JOptionPane.showMessageDialog(this, "Datos exportados correctamente a: \n " + filePath, "Exito", JOptionPane.ERROR_MESSAGE);
-                        
-                    }
-                } catch (IOException e) {
-                }
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al exportar datos: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-          
-    }//GEN-LAST:event_cargarArchivoCSVActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cargarArchivoCSV;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

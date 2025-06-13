@@ -4,6 +4,8 @@
  */
 package com.mycompany.proyecto_a;
 
+import java.util.Date;
+
 /**
  *
  * @author az
@@ -12,6 +14,7 @@ class regisVen {
     public String libro;  
     public int cantidad;
     public double total;
+    public Date fecha;
 
     public regisVen() {
     }
