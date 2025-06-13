@@ -32,14 +32,14 @@ public class ConsultaVenta extends javax.swing.JFrame {
         jTable1.setModel(t);
         TableModel tabla = jTable1.getModel();
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         
         for (VentaCompleta venta : Proyecto_A.ConsultaVenta) {
             Object[] fila = {
                venta.nit,
                venta.nombreCliente,
                venta.direccion,
-               new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(venta.fechaHora),
+               dateFormat.format(venta.fechaHora),
                String.format("%.2f", venta.totalConIva),
                String.format("%.2f", venta.totalSinIva)
             };

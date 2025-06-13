@@ -346,7 +346,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="cargarArchivoCSV">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cargar desde CSV"/>
+        <Property name="text" type="java.lang.String" value="Cargar a CSV"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cargarArchivoCSVActionPerformed"/>

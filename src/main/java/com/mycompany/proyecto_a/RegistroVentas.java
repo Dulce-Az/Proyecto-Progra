@@ -4,16 +4,16 @@
  */
 package com.mycompany.proyecto_a;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.plaf.FileChooserUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -24,12 +24,6 @@ import javax.swing.table.TableModel;
 public class RegistroVentas extends javax.swing.JFrame {
     public Usuario usuarioActual;
     private regisVen RegistroVenta;
-   
-    private Object[][] opcionesGenericas ={
-        {"Libro 1", 15.77},
-        {"Libro 2", 22.50},
-        {"Libro 3", 10.75}
-    };
         
     /**
      * Creates new form RegistroVentas
@@ -44,36 +38,18 @@ public class RegistroVentas extends javax.swing.JFrame {
         pintarTabla();
     }
     private void cargarComboBoxOpciones(){
-           try {
+          
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         
-        // Verificar si el array de opciones existe
-        if (opcionesGenericas != null) {
-            for (Object[] opcion : opcionesGenericas) {
-                if (opcion != null && opcion.length > 0 && opcion[0] != null) {
-                    model.addElement(opcion[0].toString());
+            for (libro Libro : Proyecto_A.inventarioLibros) {
+                if (Libro.cantidadStock > 0) {
+                    model.addElement(Libro.titulo + " - Stock: " + Libro.cantidadStock);
                 }
             }
-        }
-        
         jComboBox1.setModel(model);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar las opciones: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
     }
     
-    private double obtenerPrecio(String opcionSeleccionada){
-         if (opcionesGenericas == null) {
-            throw new IllegalStateException("No se han definido opciones");
-        }
-        
-        for (Object[] opcion : opcionesGenericas) {
-            if (opcion != null && opcion.length >= 2 && opcionSeleccionada.equals(opcion[0])) {
-                return (double) opcion[1];
-            }
-        }
-        throw new IllegalArgumentException("Opción no encontrada: " + opcionSeleccionada);
-    }
+ 
     
     private void actualizarTotalCompra(){
         double total = 0.0;
@@ -208,7 +184,7 @@ public class RegistroVentas extends javax.swing.JFrame {
             }
         });
 
-        cargarArchivoCSV.setText("Cargar desde CSV");
+        cargarArchivoCSV.setText("Cargar a CSV");
         cargarArchivoCSV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cargarArchivoCSVActionPerformed(evt);
@@ -369,52 +345,65 @@ public class RegistroVentas extends javax.swing.JFrame {
             return;
         }
         
-        // 3. Convertir y validar cantidad
-        int cantidad;
-        try {
-            cantidad = Integer.parseInt(cantidadTexto);
-            if (cantidad <= 0) {
-                throw new NumberFormatException();
+        
+        String[] partes = opcionSeleccionada.split(" - Stock: ");
+
+        // Validar que el split devuelva 2 partes (nombre y stock)
+            if (partes.length != 2) {
+         JOptionPane.showMessageDialog(this, 
+        "Formato de libro inválido. Contacte al administrador.", 
+        "Error", JOptionPane.ERROR_MESSAGE);
+              return;
             }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Cantidad debe ser un número entero positivo", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+
+        String nombreLibro = partes[0].trim();
+        int stockDisponible = Integer.parseInt(partes[1].trim());
         
-        // 4. Obtener precio (corrigiendo el nombre del método)
-        double precioUnitario = obtenerPrecio(opcionSeleccionada);
-        double totalConIva = cantidad * precioUnitario;
-        double totalSinIva = totalConIva / 1.12;
-        double iva = totalConIva - totalSinIva;
+         int cantidad = Integer.parseInt(cantidadTexto);
+           if (cantidad <= 0) {
+               throw new NumberFormatException();
+           }
         
-        totalAcumulado += totalConIva; 
+           if (cantidad > stockDisponible) {
+               JOptionPane.showMessageDialog(this,
+                       "Stock insuficiente" + stockDisponible + "unidades",
+                       "Error", JOptionPane.ERROR_MESSAGE);
+               return;
+           }
         
-        // 5. Crear y guardar registro
+        libro libroVendido = null; 
+        
+           for (libro Libro : Proyecto_A.inventarioLibros) {
+               if (Libro.titulo.equals(nombreLibro)) {
+                   libroVendido = Libro;
+                   break;
+               }
+           }
+           if (libroVendido == null || libroVendido.cantidadStock < cantidad) {
+               JOptionPane.showMessageDialog(this, "Stock insuficiente para '" + nombreLibro + "'",
+                       "Error", JOptionPane.ERROR_MESSAGE);
+           }
+        
+        libroVendido.cantidadStock -= cantidad;
+        
+        double precioUnitario = libroVendido.precio;
+        double totalConIva = cantidad * precioUnitario * 1.12; // Asumiendo 12% IVA
+        
         regisVen nuevaVenta = new regisVen();
-        nuevaVenta.libro = opcionSeleccionada;
+        nuevaVenta.libro = nombreLibro;
         nuevaVenta.cantidad = cantidad;
         nuevaVenta.total = totalConIva;
-        
         Proyecto_A.RegistroVenta.add(nuevaVenta);
         
-        VentaCompleta ventaCompleta = new VentaCompleta(
-                nitCliente,
-                nombreCliente,
-                direccionCliente,
-                totalConIva,
-                totalSinIva
-        );
-        Proyecto_A.ConsultaVenta.add(ventaCompleta);
-        
-        // 6. Actualizar interfaz
+        // 7. Actualizar interfaz
         pintarTabla();
         jTextField9.setText("");
-        jTextField10.setText(String.format("%.2f", totalAcumulado));
+        jTextField10.setText(String.format("%.2f", totalAcumulado += totalConIva));
         
-        JOptionPane.showMessageDialog(this, 
-            "Venta registrada exitosamente", 
-            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        
+        JOptionPane.showMessageDialog(this, "Venta registrada. Stock actualizado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+           
+    } catch(NumberFormatException e){
+        JOptionPane.showMessageDialog(this, "Cantidad debe ser un número positivo", "Erro",JOptionPane.ERROR_MESSAGE);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error al guardar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         e.printStackTrace();
@@ -428,7 +417,7 @@ public class RegistroVentas extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        String NIT = jTextField3.getText().trim();
+        String nit = jTextField3.getText().trim();
         String nombreCliente = jTextField7.getText().trim();
         String direccion = jTextField8.getText().trim();
         
@@ -440,12 +429,16 @@ public class RegistroVentas extends javax.swing.JFrame {
         SimpleDateFormat formatoFecha = new SimpleDateFormat();
         String fechaHora = formatoFecha.format(calendario.getTime());
         
+        VentaCompleta nuevaVenta = new VentaCompleta(nit, nombreCliente, direccion, totalConIVA, totalSinIVA);
+        Proyecto_A.ConsultaVenta.add(nuevaVenta);
+        pintarTabla();
+        
         String mensaje = "=== Registro de Venta === \n\n" + 
                 "Vendedor: " + usuarioActual.nombre + "\n"+
                 "Fecha y Hora: " + fechaHora + "\n\n"+
                 "== Datos del Cliente === \n"+
                  "Nombre: " + nombreCliente + "\n" +
-                     "NIT: " + NIT + "\n" +
+                     "NIT: " + nit + "\n" +
                      "Dirección: " + direccion + "\n\n" +
                      "=== TOTALES ===\n" +
                      "Subtotal (sin IVA): " + String.format("%.2f", totalSinIVA) + "\n" +
@@ -460,73 +453,46 @@ public class RegistroVentas extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             JFileChooser fileChooser = new JFileChooser();
-            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                String ruta  =fileChooser.getSelectedFile().getAbsolutePath();
+            fileChooser.setDialogTitle("Guardar archivo csv");
+            fileChooser.setSelectedFile(new File("ventas.csv"));
+            
+            int userSelection = fileChooser.showSaveDialog(this);
+            
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
                 
-                ArrayList<VentaCompleta> ventas = leerVentasCSV(ruta);
+                if (!filePath.toLowerCase().endsWith(".csv")) {
+                    filePath += ".csv";
+                }
                 
-                Proyecto_A.ConsultaVenta.addAll(ventas);
-                
-                JOptionPane.showMessageDialog(this, 
-                        "Se cargaron " + ventas.size() + " ventas", 
-                        "Exito",
-                        JOptionPane.INFORMATION_MESSAGE);
-                this.dispose();
+                try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+                    writer.println("Nit, Nombre Cliente, Direccion, Fecha y Hora, Total sin IVA, Total con IVA");
+                    
+                    SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/HH/yyyy HH:mm:ss");
+                    
+                    for (VentaCompleta venta: Proyecto_A.ConsultaVenta) {
+                        writer.println(
+                        "\"" + venta.nit + "\"," +
+                        "\"" + venta.nombreCliente + "\"," +
+                        "\"" + venta.direccion + "\"," + 
+                        "\"" + dateFormat.format(venta.fechaHora)+ "\"," +
+                        String.format("%.2f", venta.totalSinIva) + "," +
+                        String.format("%.2f", venta.totalConIva));
+                        
+                        JOptionPane.showMessageDialog(this, "Datos exportados correctamente a: \n " + filePath, "Exito", JOptionPane.ERROR_MESSAGE);
+                        
+                    }
+                } catch (IOException e) {
+                }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,"Error al cargar archivo" + e.getMessage(),"Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al exportar datos: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
+          
     }//GEN-LAST:event_cargarArchivoCSVActionPerformed
-private ArrayList<VentaCompleta>leerVentasCSV(String ruta) throws IOException, ParseException{
-    ArrayList<VentaCompleta> ventas = new ArrayList <>();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy,HH:mm:ss");
     
-    try(BufferedReader br = new BufferedReader(new FileReader(ruta))){
-        String linea;
-        boolean primeraLinea = true;
-        
-        while ((linea = br.readLine())!= null) { 
-            linea = linea.trim();
-            if (linea.isEmpty() || primeraLinea) {
-                primeraLinea = false;
-                continue;
-            }
-            String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-            
-            if (datos.length < 6) {
-                System.err.println("Línea ignorada (faltan datos): " + linea);
-                continue;
-            }
-            
-            try {
-                String nit = datos[0].trim();
-                String nombre = datos[1].trim();
-                String direccion = datos[2].trim();
-                
-                String fechaCompleta = datos[3].trim() + "," + datos[4].trim(); 
-                
-                double totalConIva = Double.parseDouble(datos[5].trim());
-                double totalSinIva = Double.parseDouble(datos[6].trim());
-                
-                VentaCompleta venta = new VentaCompleta(
-                        nit,
-                        nombre,
-                        direccion,
-                        totalConIva,
-                        totalSinIva
-                );
-                venta.fechaHora = dateFormat.parse(fechaCompleta);
-                
-                ventas.add(venta);
-                
-            } catch (Exception e) {
-                System.err.println("Error procesando línea: " + linea);
-                throw new ParseException("Formato incorrecto en línea: " + linea, 0);
-            }
-        }
-    }
-    return ventas;
-}    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cargarArchivoCSV;
     private javax.swing.Box.Filler filler1;
