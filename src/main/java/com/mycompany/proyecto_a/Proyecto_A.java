@@ -16,8 +16,8 @@ public class Proyecto_A implements Serializable{
     public static ArrayList<libro> inventarioLibros=new ArrayList<>();
     public static ArrayList<Cupon> cuponesdescuento =new ArrayList<>();
     public static ArrayList<regisVen>RegistroVenta=new ArrayList<>();
-   public static ArrayList<VentaCompleta>ConsultaVenta = new ArrayList<>();
-   public static ArrayList<Proveedor>Proveedor= new ArrayList<>();
+    public static ArrayList<VentaCompleta>ConsultaVenta = new ArrayList<>();
+    public static ArrayList<Proveedor>Proveedor= new ArrayList<>();
 
     public static void main(String[] args) {
         
@@ -29,7 +29,8 @@ public class Proyecto_A implements Serializable{
         admin.password="admin";
         admin.rol="A";
         admin.usuario="admin";
-        usuarios.add(admin);  
+        Proyecto_A.usuarios.add(admin);  
+            Persistencia.guardarDatos();
         }
         
         login l=new login();
@@ -37,7 +38,7 @@ public class Proyecto_A implements Serializable{
        
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
         Persistencia.guardarDatos();
-        System.out.println("Datos guardados al cerrar la aplicación");
+        System.out.println("Aplicacion cerrada. Datos guardados.");
          }));
     }
    
