@@ -4,13 +4,14 @@
  */
 package com.mycompany.proyecto_a;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author az
  */
-public class VentaCompleta {
+public class VentaCompleta implements Serializable{
     public String nit;
     public String nombreCliente;
     public String direccion;
@@ -27,5 +28,16 @@ public class VentaCompleta {
         this.totalSinIva = totalSinIva;
     }
 
-  
+    private double descuento;
+    private String codigoCupon;
+    
+    public void setDescuento(double descuento){
+        this.descuento = descuento;
+        
+    }
+    
+    public void setCodigoCupon(String codigoCupon){
+        this.codigoCupon = codigoCupon;
+    }
 }
+

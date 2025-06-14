@@ -4,13 +4,14 @@
  */
 package com.mycompany.proyecto_a;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author az
  */
-public class Cupon {
+public class Cupon implements Serializable{
 
   
 

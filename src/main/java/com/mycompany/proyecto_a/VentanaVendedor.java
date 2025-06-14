@@ -232,12 +232,6 @@ public class VentanaVendedor extends javax.swing.JFrame {
         pintarTabla();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        Agregartelefono t=new Agregartelefono(usuarioActual);
-        t.setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         MiPerfilV pv=new MiPerfilV(usuarioActual);
@@ -267,6 +261,12 @@ public class VentanaVendedor extends javax.swing.JFrame {
         InformeLibros Inf = new InformeLibros(usuarioActual);
         Inf.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        Agregartelefono t=new Agregartelefono(usuarioActual);
+        t.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
    
 

@@ -36,7 +36,8 @@ public class InformeLibros extends javax.swing.JFrame {
         
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         
-        for (regisVen venta : Proyecto_A.InformeLibros) {
+        if (Proyecto_A.RegistroVenta != null) {
+           for (regisVen venta : Proyecto_A.RegistroVenta) {
             Object [] fila = {
                 dateFormat.format(venta.fecha),
                 venta.cantidad,
@@ -44,7 +45,9 @@ public class InformeLibros extends javax.swing.JFrame {
                 String.format("%.2f", venta.total)
             };
             t.addRow(fila);
+        } 
         }
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -154,7 +157,7 @@ public class InformeLibros extends javax.swing.JFrame {
                     
                     for (regisVen venta : Proyecto_A.RegistroVenta) {
                         escribir.println(
-                        "\"" + dateFormat.format(venta.fecha) + "\"" + 
+                        "\"" + dateFormat.format(venta.fecha) + "\"," + 
                                 venta.cantidad + "," + 
                                 "\"" + venta.libro + "\"," + 
                                 String.format("%.2f", venta.total));

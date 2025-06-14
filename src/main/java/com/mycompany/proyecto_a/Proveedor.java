@@ -4,11 +4,13 @@
  */
 package com.mycompany.proyecto_a;
 
+import java.io.Serializable;
+
 /**
  *
  * @author az
  */
-class Proveedor {
+class Proveedor implements Serializable{
     
    public  String Nit;
     public String direccion;
